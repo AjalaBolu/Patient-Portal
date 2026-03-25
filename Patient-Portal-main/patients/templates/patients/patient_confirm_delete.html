@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-3">
+        <div class="card-body text-center p-5">
+            
+            <!-- Heading -->
+            <h2 class="fw-bold text-danger mb-4">⚠️ Confirm Delete</h2>
+            
+            <!-- Message -->
+            <p class="fs-5 mb-4">
+                Are you sure you want to permanently delete 
+                <strong class="text-dark">{{ patient.user.get_full_name }}</strong>?
+            </p>
+
+            <!-- Form -->
+            <form method="post" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger px-4 me-2">
+                    🗑 Yes, Delete
+                </button>
+            </form>
+
+            <a href="{% url 'patients:patient_list' %}" class="btn btn-secondary px-4">
+                ❌ Cancel
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

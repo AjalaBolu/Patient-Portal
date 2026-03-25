@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="text-dark">All Medical History Records</h2>
+  </div>
+
+  <!-- Search Form -->
+  <form method="get" action="" class="d-flex mb-4">
+    <input 
+      type="text" 
+      name="q" 
+      class="form-control me-2" 
+      placeholder="Search medical history..." 
+      value="{{ request.GET.q }}"
+    >
+    <button type="submit" class="btn btn-primary">Search</button>
+  </form>
+
+  <!-- Medical History Table -->
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-hover table-bordered align-middle">
+          <thead class="table-dark">
+            <tr>
+              <th>Patient</th>
+              <th>Condition</th>
+              <th>Notes</th>
+              <th>Date Recorded</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for h in history %}
+            <tr>
+              <td>{{ h.patient.user.get_full_name }}</td>
+              <td>{{ h.condition }}</td>
+              <td>{{ h.notes }}</td>
+              <td>{{ h.date_recorded }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4" class="text-center text-muted">No medical history records found.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

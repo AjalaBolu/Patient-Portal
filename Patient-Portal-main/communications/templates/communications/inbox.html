@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+  <h2>Inbox</h2>
+  <div class="list-group mt-3">
+    {% if messages %}
+      {% for msg in messages %}
+        <a href="#" class="list-group-item list-group-item-action">
+          <strong>From:</strong> {{ msg.sender.get_full_name }}<br>
+          <strong>Subject:</strong> {{ msg.subject }}<br>
+          <small>{{ msg.timestamp|date:"Y-m-d H:i" }}</small>
+        </a>
+      {% endfor %}
+    {% else %}
+      <p class="text-muted">No messages found.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

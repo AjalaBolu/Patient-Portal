@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="card shadow-sm border-0">
+    <div class="card-header" style="background-color: #212529; color: #ffffff;">
+      <h4 class="mb-0">Add Lab Result</h4>
+    </div>
+    <div class="card-body">
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+          {{ form.as_p }}
+        </div>
+        <button type="submit" class="btn" style="background-color:#212529; color:white;">
+          <i class="bi bi-save"></i> Save
+        </button>
+        <a href="{% url 'medical:labresult_list' patient_id=patient.id %}" class="btn btn-outline-dark ms-2">
+          <i class="bi bi-arrow-left"></i> Back
+        </a>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

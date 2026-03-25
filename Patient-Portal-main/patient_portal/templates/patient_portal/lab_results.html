@@ -1,0 +1,93 @@
+{% extends "main.html" %}
+{% block title %}My Lab Results{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4 fw-bold text-primary">My Lab Results</h2>
+
+    {% if lab_results %}
+        <div class="row g-4 mb-5">
+            {% for result in lab_results %}
+                <div class="col-md-6">
+                    <div class="card bg-white shadow-sm h-100 portal-card">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">{{ result.test_name }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                Date Conducted: {{ result.date_conducted|date:"M d, Y" }}
+                            </h6>
+                            <p class="card-text">{{ result.result }}</p>
+                            {% if result.file %}
+                                <a href="{{ result.file.url }}" class="btn btn-outline-primary btn-sm mt-2">
+                                    <i class="bi bi-download"></i> Download Report
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-muted">No lab results available yet.</p>
+    {% endif %}
+
+    <h2 class="mb-3 fw-bold text-primary">My Lab Test Requests</h2>
+    <a href="{% url 'patient_portal:lab_result_request' %}" class="btn btn-primary mb-4">
+        <i class="bi bi-plus-circle"></i> Request New Test
+    </a>
+
+    {% if test_requests %}
+        <div class="row g-4">
+            {% for req in test_requests %}
+                <div class="col-md-6">
+                    <div class="card bg-white shadow-sm h-100 portal-card">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">{{ req.test_name }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                Requested on: {{ req.requested_on|date:"M d, Y" }}
+                            </h6>
+                            <p class="card-text">Reason: {{ req.reason }}</p>
+                            <span class="badge 
+                                {% if req.status == 'Pending' %}bg-warning text-dark
+                                {% elif req.status == 'Approved' %}bg-success
+                                {% elif req.status == 'Denied' %}bg-danger
+                                {% else %}bg-secondary{% endif %}">
+                                {{ req.status }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-muted">No test requests made yet.</p>
+    {% endif %}
+</div>
+
+<style>
+    body {
+        background-color: transparent; /* inherit light blue gradient from main.html */
+    }
+
+    .portal-card {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        border-radius: 15px;
+    }
+
+    .portal-card:hover {
+        transform: scale(1.03);
+        box-shadow: 0 8px 20px rgba(13, 110, 253, 0.2); /* soft blue hover shadow */
+    }
+
+    .card-title {
+        font-weight: 600;
+    }
+
+    .card-subtitle {
+        font-style: italic;
+    }
+
+    .btn-outline-primary {
+        border-radius: 20px;
+    }
+</style>
+{% endblock %}

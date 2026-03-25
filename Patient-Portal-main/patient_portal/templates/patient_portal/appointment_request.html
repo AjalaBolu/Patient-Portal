@@ -1,0 +1,20 @@
+{% extends 'main.html' %}
+{% block title %}Request Appointment{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="card shadow-sm border-0">
+    <div class="card-body">
+      <h4 class="fw-bold mb-3">Request an Appointment</h4>
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="mt-3">
+          <button type="submit" class="btn btn-primary">Submit Request</button>
+          <a href="{% url 'patient_portal:patient_appointments' %}" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

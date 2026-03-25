@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Billing Summary for {{ patient.user.get_full_name }}</h2>
+
+<ul>
+  <li><strong>Total Amount:</strong> ₦{{ total_amount }}</li>
+  <li><strong>Paid:</strong> ₦{{ paid_amount }}</li>
+  <li><strong>Unpaid:</strong> ₦{{ unpaid_amount }}</li>
+  <li><strong>Pending:</strong> ₦{{ pending_amount }}</li>
+</ul>
+
+<br>
+<h3>Billing Records</h3>
+<table border="1" cellpadding="8">
+  <thead>
+    <tr>
+      <th>Description</th>
+      <th>Amount</th>
+      <th>Status</th>
+      <th>Date</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for record in records %}
+    <tr>
+      <td>{{ record.description }}</td>
+      <td>₦{{ record.amount }}</td>
+      <td>{{ record.get_status_display }}</td>
+      <td>{{ record.date_created|date:"Y-m-d H:i" }}</td>
+      <td>
+        <a href="{% url 'billing:billing_edit' record.pk %}">Edit</a> |
+        <a href="{% url 'billing:billing_delete' record.pk %}">Delete</a>
+        {% if record.status != 'paid' %}
+          | <a href="{% url 'billing:billing_mark_paid' record.pk %}">Mark as Paid</a>
+        {% endif %}
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">No billing records found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

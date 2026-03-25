@@ -1,0 +1,112 @@
+{% extends 'main.html' %}
+{% block title %}Patient Dashboard{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background: linear-gradient(135deg, #f0f4ff, #e6ecf8);
+        min-height: 100vh;
+    }
+
+    h2 {
+        color: #1a237e;
+    }
+
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+
+    .card-header {
+        font-size: 1.1rem;
+    }
+
+    .list-group-item {
+        background-color: #ffffff;
+    }
+</style>
+
+<h2 class="mb-4 fw-bold">Hi, {{ request.user.first_name }} 👋</h2>
+
+<div class="row g-4">
+    <!-- Appointments -->
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary text-white fw-semibold">
+                📅 Upcoming Appointments
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for appointment in recent_appointments %}
+                    <li class="list-group-item">
+                        <strong>{{ appointment.date|date:"M d, Y" }}</strong> <br>
+                        <span class="text-muted">Doctor: {{ appointment.doctor }}</span>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item text-muted">No upcoming appointments</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Prescriptions -->
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary text-white fw-semibold">
+                💊 Recent Prescriptions
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for prescription in recent_prescriptions %}
+                    <li class="list-group-item">
+                        <strong>{{ prescription.medication }}</strong> — {{ prescription.dosage }}
+                    </li>
+                {% empty %}
+                    <li class="list-group-item text-muted">No prescriptions found</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Lab Results -->
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary text-white fw-semibold">
+                🧪 Latest Lab Results
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for lab in recent_lab_results %}
+                    <li class="list-group-item">
+                        <strong>{{ lab.test_name }}</strong> — {{ lab.result }}
+                    </li>
+                {% empty %}
+                    <li class="list-group-item text-muted">No lab results available</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary text-white fw-semibold">
+                ✉️ Recent Messages
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for msg in recent_messages %}
+                    <li class="list-group-item">
+                        <strong>{{ msg.sender }}</strong> <br>
+                        <span class="text-muted">{{ msg.subject }}</span>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item text-muted">No messages</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

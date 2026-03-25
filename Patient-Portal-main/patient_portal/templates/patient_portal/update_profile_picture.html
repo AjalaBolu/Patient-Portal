@@ -1,0 +1,21 @@
+{% extends 'main.html' %}
+{% block title %}Update Profile Picture{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Update Profile Picture</h2>
+
+   <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    <div class="mb-3">
+        <label for="profile_picture" class="form-label">Choose Profile Picture</label>
+        <input class="form-control" type="file" id="profile_picture" name="profile_picture" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update Picture</button>
+    <a href="{% url 'patient_portal:my_profile' %}" class="btn btn-secondary">Cancel</a>
+</form>
+
+</div>
+{% endblock %}

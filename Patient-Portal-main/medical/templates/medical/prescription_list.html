@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="text-light">Prescriptions</h2>
+        <a href="{% url 'medical:prescription_add' patient.id %}" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> Add Prescription
+        </a>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-dark table-striped align-middle">
+                    <thead>
+                        <tr>
+                            <th>Patient</th>
+                            <th>Medication</th>
+                            <th>Dosage</th>
+                            <th>Instructions</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in prescriptions %}
+                        <tr>
+                            <td>{{ p.patient.user.get_full_name }}</td>
+                            <td>{{ p.medication }}</td>
+                            <td>{{ p.dosage }}</td>
+                            <td>{{ p.instructions }}</td>
+                            <td>{{ p.date_prescribed }}</td>
+                            <td>
+                                <a href="{% url 'medical:prescription_edit' p.id %}" 
+                                   class="btn btn-sm btn-warning me-1">Edit</a>
+                                <a href="{% url 'medical:prescription_delete' p.id %}" 
+                                   class="btn btn-sm btn-danger">Delete</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted">No prescriptions found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

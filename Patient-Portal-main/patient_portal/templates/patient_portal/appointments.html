@@ -1,0 +1,101 @@
+{% extends 'main.html' %}
+{% block title %}My Appointments{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-primary">My Appointments</h2>
+    <a href="{% url 'patient_portal:patient_appointment_request' %}" class="btn btn-primary shadow-sm">
+      <i class="bi bi-calendar-plus me-1"></i> Request Appointment
+    </a>
+  </div>
+
+  <!-- Appointment List -->
+  <div class="card bg-white shadow-sm border-0 portal-card">
+    <div class="card-body p-0">
+      <table class="table table-hover mb-0 align-middle">
+        <thead class="table-primary text-dark">
+          <tr>
+            <th>Date & Time</th>
+            <th>Doctor</th>
+            <th>Reason</th>
+            <th>Status</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for appointment in appointments %}
+          <tr>
+            <td>{{ appointment.date|date:"M d, Y H:i" }}</td>
+            <td>{{ appointment.doctor.get_full_name|default:appointment.doctor }}</td>
+            <td>{{ appointment.reason|default:"—" }}</td>
+            <td>
+              <span class="badge rounded-pill 
+                {% if appointment.status == 'Scheduled' %}bg-info
+                {% elif appointment.status == 'Completed' %}bg-success
+                {% elif appointment.status == 'Cancelled' %}bg-danger
+                {% else %}bg-secondary{% endif %}">
+                {{ appointment.status }}
+              </span>
+            </td>
+            <td class="text-end">
+              <a href="{% url 'patient_portal:patient_appointment_detail' appointment.pk %}" 
+                 class="btn btn-sm btn-outline-primary me-1">
+                 <i class="bi bi-eye"></i> View
+              </a>
+              {% if appointment.status == 'Scheduled' %}
+              <a href="{% url 'patient_portal:patient_appointment_cancel' appointment.pk %}" 
+                 class="btn btn-sm btn-outline-danger">
+                 <i class="bi bi-x-circle"></i> Cancel
+              </a>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="5" class="text-muted text-center py-4">
+              <i class="bi bi-calendar-x fs-4 d-block mb-2"></i>
+              No appointments scheduled.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<style>
+    body {
+        background-color: transparent; /* inherit from main.html */
+    }
+
+    .portal-card {
+        border-radius: 15px;
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+    .portal-card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 8px 20px rgba(13, 110, 253, 0.2); /* soft blue hover shadow */
+    }
+
+    h2 {
+        font-weight: 600;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #e7f1ff; /* light blue row hover */
+    }
+
+    .btn-outline-primary, .btn-outline-danger {
+        border-radius: 20px;
+    }
+
+    .badge {
+        font-weight: 500;
+    }
+</style>
+{% endblock %}

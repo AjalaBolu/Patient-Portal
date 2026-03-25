@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-dark">📋 Medical Records</h2>
+    <a href="{% url 'medical:medical_add' %}" class="btn btn-success shadow-sm">
+      <i class="bi bi-plus-circle me-1"></i> Add New Record
+    </a>
+  </div>
+
+  <!-- Records Table -->
+  <div class="card shadow-lg border-0 bg-dark">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-dark table-hover table-striped mb-0 align-middle">
+          <thead class="table-light text-dark">
+            <tr>
+              <th>Patient</th>
+              <th>Diagnosis</th>
+              <th>Treatment</th>
+              <th>Allergies</th>
+              <th>Notes</th>
+              <th class="text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for record in records %}
+            <tr>
+              <td class="fw-semibold">{{ record.patient.user.get_full_name }}</td>
+              <td>{{ record.diagnosis }}</td>
+              <td>{{ record.treatment }}</td>
+              <td>{{ record.allergies }}</td>
+              <!-- Truncate long notes -->
+              <td class="text-truncate" style="max-width: 200px;" title="{{ record.notes }}">
+                {{ record.notes }}
+              </td>
+              <td class="text-center">
+                <a href="{% url 'medical:medical_edit' record.pk %}" 
+                   class="btn btn-sm btn-outline-primary me-2 shadow-sm">
+                  <i class="bi bi-pencil-square"></i>
+                </a>
+                <a href="{% url 'medical:medical_delete' record.pk %}" 
+                   class="btn btn-sm btn-outline-danger shadow-sm"
+                   onclick="return confirm('Are you sure you want to delete this record?');">
+                  <i class="bi bi-trash"></i>
+                </a>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="6" class="text-center text-muted py-4">
+                <i class="bi bi-info-circle"></i> No medical records found.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

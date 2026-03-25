@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-dark">All Appointments</h2>
+
+    <!-- Filter Form -->
+    <form method="get" class="row g-3 mb-4">
+        <div class="col-md-4">
+            <label for="status" class="form-label">Status</label>
+            <select name="status" id="status" class="form-select">
+                <option value="">All</option>
+                <option value="Pending" {% if request.GET.status == 'Pending' %}selected{% endif %}>Pending</option>
+                <option value="Confirmed" {% if request.GET.status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
+                <option value="Cancelled" {% if request.GET.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <label for="doctor" class="form-label">Doctor</label>
+            <select name="doctor" id="doctor" class="form-select">
+                <option value="">All</option>
+                {% for doc in doctors %}
+                <option value="{{ doc.id }}" {% if request.GET.doctor == doc.id|stringformat:"s" %}selected{% endif %}>
+                    {{ doc.get_full_name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-4 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+        </div>
+    </form>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">Appointments List</h5>
+        <a href="{% url 'appointment:appointment_add' %}" class="btn btn-success">+ Create New Appointment</a>
+    </div>
+
+    <table class="table table-bordered table-striped table-hover">
+        <thead class="table-dark text-center">
+            <tr>
+                <th>Patient</th>
+                <th>Doctor</th>
+                <th>Date</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for appointment in appointments %}
+            <tr>
+                <td>{{ appointment.patient.user.get_full_name }}</td>
+                <td>{{ appointment.doctor.get_full_name }}</td>
+                <td>{{ appointment.date }}</td>
+                <td>{{ appointment.reason }}</td>
+                <td>
+                    <span class="badge 
+                        {% if appointment.status == 'Pending' %} bg-warning text-dark
+                        {% elif appointment.status == 'Confirmed' %} bg-success
+                        {% elif appointment.status == 'Cancelled' %} bg-danger
+                        {% else %} bg-secondary
+                        {% endif %}">
+                        {{ appointment.status }}
+                    </span>
+                </td>
+                <td>
+                    <a href="{% url 'appointment:appointment_edit' appointment.pk %}" class="btn btn-sm btn-primary">Edit</a>
+                    <a href="{% url 'appointment:appointment_delete' appointment.pk %}" 
+                       class="btn btn-sm btn-danger"
+                       onclick="return confirm('Are you sure you want to delete this appointment?');">
+                       Delete
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center text-muted">No appointments found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

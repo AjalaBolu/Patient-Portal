@@ -1,0 +1,73 @@
+{% extends "main.html" %}
+{% block title %}Request New Lab Test{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card bg-white shadow portal-card">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Request New Lab Test</h4>
+        </div>
+        <div class="card-body">
+            <form method="post" class="needs-validation" novalidate>
+    {% csrf_token %}
+
+    <!-- Test Name -->
+    <div class="mb-3">
+        <input type="text"
+               name="{{ form.test_name.name }}"
+               id="{{ form.test_name.id_for_label }}"
+               value="{{ form.test_name.value|default_if_none:'' }}"
+               class="form-control"
+               placeholder="{{ form.test_name.label }}">
+        {% if form.test_name.errors %}
+            <div class="text-danger small mt-1">
+                {% for error in form.test_name.errors %}{{ error }}<br>{% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Reason -->
+    <div class="mb-3">
+        <textarea name="{{ form.reason.name }}"
+                  id="{{ form.reason.id_for_label }}"
+                  class="form-control"
+                  rows="4"
+                  placeholder="{{ form.reason.label }}">{{ form.reason.value|default_if_none:'' }}</textarea>
+        {% if form.reason.errors %}
+            <div class="text-danger small mt-1">
+                {% for error in form.reason.errors %}{{ error }}<br>{% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit Request</button>
+    <a href="{% url 'patient_portal:patient_lab_results' %}" class="btn btn-secondary ms-2">Cancel</a>
+</form>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: transparent; /* inherit from main.html */
+    }
+
+    .portal-card {
+        border-radius: 15px;
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+    .portal-card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 8px 20px rgba(13, 110, 253, 0.2); /* subtle blue shadow */
+    }
+
+    .form-label {
+        font-weight: 500;
+    }
+
+    .btn-primary, .btn-outline-primary {
+        border-radius: 20px;
+    }
+</style>
+{% endblock %}

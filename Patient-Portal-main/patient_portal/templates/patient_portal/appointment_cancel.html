@@ -1,0 +1,21 @@
+{% extends 'main.html' %}
+{% block title %}Cancel Appointment{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="card shadow-sm border-0">
+    <div class="card-body text-center">
+      <h4 class="fw-bold text-danger">Cancel Appointment</h4>
+      <p>Are you sure you want to cancel your appointment on 
+        <strong>{{ appointment.date|date:"M d, Y H:i" }}</strong> 
+        with <strong>{{ appointment.doctor.get_full_name|default:appointment.doctor }}</strong>?
+      </p>
+      <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Yes, Cancel</button>
+        <a href="{% url 'patient_portal:patient_appointment_list' %}" class="btn btn-outline-secondary">No, Go Back</a>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

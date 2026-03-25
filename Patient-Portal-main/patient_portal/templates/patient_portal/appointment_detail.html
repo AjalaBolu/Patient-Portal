@@ -1,0 +1,19 @@
+{% extends 'main.html' %}
+{% block title %}Appointment Details{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="card shadow-sm border-0">
+    <div class="card-body">
+      <h4 class="fw-bold mb-3">Appointment Details</h4>
+      <p><strong>Date & Time:</strong> {{ appointment.date|date:"M d, Y H:i" }}</p>
+      <p><strong>Doctor:</strong> {{ appointment.doctor.get_full_name|default:appointment.doctor }}</p>
+      <p><strong>Reason:</strong> {{ appointment.reason }}</p>
+      <p><strong>Status:</strong> 
+        <span class="badge bg-secondary">{{ appointment.status }}</span>
+      </p>
+      <a href="{% url 'patient_portal:patient_appointments' %}" class="btn btn-outline-secondary mt-3">Back</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

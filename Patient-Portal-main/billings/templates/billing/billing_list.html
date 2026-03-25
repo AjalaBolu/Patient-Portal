@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4">All Billing Records</h2>
+
+  <!-- Filter Form -->
+  <form method="get" action="" class="row g-3 align-items-end mb-4">
+    <div class="col-md-3">
+      <label for="status" class="form-label">Status</label>
+      <select name="status" id="status" class="form-select">
+        <option value="">-- All --</option>
+        <option value="unpaid" {% if request.GET.status == 'unpaid' %}selected{% endif %}>Unpaid</option>
+        <option value="paid" {% if request.GET.status == 'paid' %}selected{% endif %}>Paid</option>
+        <option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %}>Pending</option>
+      </select>
+    </div>
+
+    <div class="col-md-3">
+      <label for="patient" class="form-label">Patient</label>
+      <select name="patient" id="patient" class="form-select">
+        <option value="">-- All --</option>
+        {% for p in patients %}
+          <option value="{{ p.id }}" {% if request.GET.patient == p.id|stringformat:"s" %}selected{% endif %}>
+            {{ p.user.get_full_name }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="col-md-4">
+      <label for="q" class="form-label">Search</label>
+      <input type="text" name="q" id="q" value="{{ request.GET.q }}" class="form-control" placeholder="Search description or name">
+    </div>
+
+    <div class="col-md-2 d-flex">
+      <button type="submit" class="btn btn-primary me-2">Filter</button>
+      <a href="{% url 'billing:export_bills_csv' %}?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.patient %}patient={{ request.GET.patient }}{% endif %}" class="btn btn-success">Export CSV</a>
+    </div>
+  </form>
+
+  <div class="mb-3">
+    <a href="{% url 'billing:billing_add' %}" class="btn btn-outline-primary">+ Add Billing Record</a>
+  </div>
+
+  <!-- Billing Table -->
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>Patient</th>
+          <th>Amount</th>
+          <th>Description</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for record in records %}
+        <tr>
+          <td>{{ record.patient.user.get_full_name }}</td>
+          <td>₦{{ record.amount|floatformat:2 }}</td>
+          <td>{{ record.description }}</td>
+          <td>
+            {% if record.status == 'paid' %}
+              <span class="badge bg-success">{{ record.get_status_display }}</span>
+            {% elif record.status == 'unpaid' %}
+              <span class="badge bg-danger">{{ record.get_status_display }}</span>
+            {% else %}
+              <span class="badge bg-warning text-dark">{{ record.get_status_display }}</span>
+            {% endif %}
+          </td>
+          <td>{{ record.date_created|date:"Y-m-d H:i" }}</td>
+          <td>
+            <a href="{% url 'billing:billing_edit' record.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+            <a href="{% url 'billing:billing_delete' record.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+            {% if record.status != 'paid' %}
+              <a href="{% url 'billing:billing_mark_paid' record.pk %}" class="btn btn-sm btn-success">Mark as Paid</a>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="text-center">No billing records found.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

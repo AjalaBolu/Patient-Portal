@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+
+    <!-- Patient Details -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-dark text-white">
+            <h4 class="mb-0">Patient Details: {{ patient.user.get_full_name }}</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Username:</strong> {{ patient.user.username }}</p>
+                    <p><strong>Email:</strong> {{ patient.user.email }}</p>
+                    <p><strong>Gender:</strong> {{ patient.gender }}</p>
+                    <p><strong>Date of Birth:</strong> {{ patient.date_of_birth }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Phone:</strong> {{ patient.phone }}</p>
+                    <p><strong>Address:</strong> {{ patient.address }}</p>
+                    <p><strong>Marital Status:</strong> {{ patient.marital_status }}</p>
+                    <p><strong>Emergency Contact:</strong> {{ patient.emergency_contact }} ({{ patient.emergency_phone }})</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lab Results -->
+    <div class="card shadow mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center bg-dark text-white">
+            <h5 class="mb-0">Lab Results</h5>
+            <a href="{% url 'medical:labresult_add' patient.pk %}" class="btn btn-sm btn-primary">+ Add Lab Result</a>
+        </div>
+        <div class="card-body">
+            {% if lab_results %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Date Conducted</th>
+                            <th>Test Name</th>
+                            <th>Result</th>
+                            <th>File</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for result in lab_results %}
+                        <tr>
+                            <td>{{ result.date_conducted }}</td>
+                            <td>{{ result.test_name }}</td>
+                            <td>{{ result.result }}</td>
+                            <td>
+                                {% if result.file %}
+                                    <a href="{{ result.file.url }}" class="btn btn-sm btn-outline-success">Download</a>
+                                {% else %}
+                                    <span class="text-muted">None</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'medical:labresult_edit' result.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                                <a href="{% url 'medical:labresult_delete' result.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info">No lab results available for this patient.</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Prescriptions -->
+    <div class="card shadow mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center bg-dark text-white">
+            <h5 class="mb-0">Prescriptions</h5>
+            <a href="{% url 'medical:prescription_add' patient.pk %}" class="btn btn-sm btn-primary">+ Add Prescription</a>
+        </div>
+        <div class="card-body">
+            {% if prescriptions %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Medication</th>
+                            <th>Dosage</th>
+                            <th>Instructions</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for prescription in prescriptions %}
+                        <tr>
+                            <td>{{ prescription.medication }}</td>
+                            <td>{{ prescription.dosage }}</td>
+                            <td>{{ prescription.instructions }}</td>
+                            <td>
+                                <a href="{% url 'medical:prescription_edit' prescription.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                                <a href="{% url 'medical:prescription_delete' prescription.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info">No prescriptions available for this patient.</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Medical History -->
+    <div class="card shadow mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center bg-dark text-white">
+            <h5 class="mb-0">Medical History</h5>
+            <a href="{% url 'medical:medicalhistory_add' patient.pk %}" class="btn btn-sm btn-primary">+ Add Medical History</a>
+        </div>
+        <div class="card-body">
+            {% if medical_histories %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Condition</th>
+                            <th>Date Diagnosed</th>
+                            <th>Notes</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for history in medical_histories %}
+                        <tr>
+                            <td>{{ history.condition }}</td>
+                            <td>{{ history.date_diagnosed }}</td>
+                            <td>{{ history.notes }}</td>
+                            <td>
+                                <a href="{% url 'medical:medicalhistory_edit' history.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                                <a href="{% url 'medical:medicalhistory_delete' history.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info">No medical history available for this patient.</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Billing + Back Button -->
+    <div class="d-flex justify-content-between">
+        <a href="{% url 'billing:billing_summary' patient.id %}" class="btn btn-outline-primary">View Billing Summary</a>
+        <a href="{% url 'patients:patients' %}" class="btn btn-secondary">← Back to Patient List</a>
+    </div>
+
+</div>
+{% endblock %}

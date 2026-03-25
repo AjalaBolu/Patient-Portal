@@ -1,0 +1,130 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Patient Portal{% endblock %}</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #cfe2ff, #e7f1ff, #b6d4fe);
+      color: #212529;
+      min-height: 100vh;
+    }
+
+    /* Sidebar common styling */
+    .sidebar {
+      width: 250px;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #b6d4fe, #cfe2ff);
+      color: #0d6efd;
+      padding: 20px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1030;
+      overflow-y: auto;
+      transition: transform 0.3s ease;
+    }
+
+    .sidebar .greeting {
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 20px;
+      font-size: 1.1rem;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 10px 15px;
+      color: #212529;
+      text-decoration: none;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      margin-bottom: 4px;
+    }
+
+    .sidebar a:hover,
+    .sidebar a.active {
+      background-color: #0d6efd;
+      color: #fff !important;
+    }
+
+    /* Main content area */
+    .content-area {
+      margin-left: 250px;
+      padding: 30px;
+      transition: margin-left 0.3s ease, padding 0.3s ease;
+    }
+
+    /* Hamburger menu for mobile */
+    .menu-toggle {
+      display: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: #0d6efd;
+      margin-bottom: 15px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+      .sidebar { width: 220px; }
+      .content-area { margin-left: 220px; padding: 20px; }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+        width: 70%;
+      }
+      .sidebar.show { transform: translateX(0); }
+
+      .content-area { margin-left: 0; padding: 15px; }
+
+      .menu-toggle { display: inline-block; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="greeting">
+      Hi, {{ request.user.first_name }} {{ request.user.last_name }}
+    </div>
+
+    <a href="{% url 'patient_portal:patient_dashboard' %}" class="{% if request.path == '/patient_portal/dashboard/' %}active{% endif %}">🏠 Dashboard</a>
+    <a href="{% url 'patient_portal:my_profile' %}" class="{% if 'profile' in request.path %}active{% endif %}">👤 My Profile</a>
+    <a href="{% url 'patient_portal:patient_prescriptions' %}" class="{% if 'prescriptions' in request.path %}active{% endif %}">💊 Prescriptions</a>
+    <a href="{% url 'patient_portal:patient_lab_results' %}" class="{% if 'lab_results' in request.path %}active{% endif %}">🧪 Lab Results</a>
+    <a href="{% url 'patient_portal:patient_appointments' %}" class="{% if 'appointments' in request.path %}active{% endif %}">📅 Appointments</a>
+    <a href="{% url 'patient_portal:patient_messages' %}" class="{% if 'messages' in request.path %}active{% endif %}">✉️ Messages</a>
+    <a href="{% url 'patient_portal:patient_login' %}">🚪 Logout</a>
+  </aside>
+
+  <!-- Main content -->
+  <main class="content-area">
+    <span class="menu-toggle" id="menu-toggle"><i class="bi bi-list"></i></span>
+    {% block content %}
+    {% endblock %}
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const toggleButton = document.getElementById('menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+
+    toggleButton.addEventListener('click', () => {
+      sidebar.classList.toggle('show');
+    });
+  </script>
+
+</body>
+</html>

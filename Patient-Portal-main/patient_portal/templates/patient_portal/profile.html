@@ -1,0 +1,124 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+
+    <!-- Profile Card -->
+    <div class="card shadow-lg mb-5 profile-card">
+        <div class="profile-header text-center py-4 bg-primary text-white">
+            <h3 class="mb-1">{{ user.first_name }} {{ user.last_name }}</h3>
+            <p class="mb-0 text-light">Hi, {{ user.first_name }} 👋</p>
+        </div>
+        <div class="card-body">
+            <div class="row align-items-center">
+                <!-- Profile Picture -->
+                <div class="col-12 col-md-4 text-center mb-4 mb-md-0">
+                    <div class="profile-avatar mb-3">
+                        {% if profile.profile_picture %}
+                            <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="img-fluid rounded-circle border border-3 border-light">
+                        {% else %}
+                            <img src="{% static 'images/default-avatar.png' %}" alt="Default Avatar" class="img-fluid rounded-circle border border-3 border-light">
+                        {% endif %}
+                    </div>
+
+                    <!-- Upload Picture -->
+                    <form method="POST" enctype="multipart/form-data" action="{% url 'patient_portal:update_profile_picture' %}">
+                        {% csrf_token %}
+                        <input type="file" name="profile_picture" class="form-control mb-2" accept="image/*" required>
+                        <button type="submit" class="btn btn-dark btn-sm w-100">Update Picture</button>
+                    </form>
+                </div>
+
+                <!-- Profile Info -->
+                <div class="col-12 col-md-8">
+                    <p><strong>Username:</strong> {{ user.username }}</p>
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    <p><strong>Date of Birth:</strong> {{ profile.date_of_birth|date:"F j, Y"|default:"Not provided" }}</p>
+                    <p><strong>Gender:</strong> {{ profile.gender|default:"Not provided" }}</p>
+                    <p><strong>Phone:</strong> {{ profile.phone|default:"Not provided" }}</p>
+                    <p><strong>Address:</strong> {{ profile.address|default:"Not provided" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Appointments -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-primary text-white">Appointments</div>
+        <div class="card-body p-2">
+            {% if appointments %}
+                <ul class="list-group list-group-flush">
+                    {% for appt in appointments %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>{{ appt.date|date:"M d, Y H:i" }} with Dr. {{ appt.doctor }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted mb-0">No appointments found.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Billing -->
+    <div class="card shadow mb-5">
+        <div class="card-header bg-dark text-white">Billing History</div>
+        <div class="card-body p-2">
+            {% if billings %}
+                <div class="table-responsive">
+                    <table class="table table-striped mb-0">
+                        <thead>
+                            <tr>
+                                <th>Invoice</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for bill in billings %}
+                                <tr>
+                                    <td>{{ bill.invoice_number }}</td>
+                                    <td>{{ bill.amount }}</td>
+                                    <td>
+                                        {% if bill.status == "Paid" %}
+                                            <span class="badge bg-success">Paid</span>
+                                        {% elif bill.status == "Pending" %}
+                                            <span class="badge bg-warning text-dark">Pending</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">{{ bill.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted mb-0">No billing records found.</p>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+
+<style>
+    /* Card styling and hover */
+    .profile-card { border-radius: 12px; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .profile-card:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
+
+    .profile-header { border-radius: 12px 12px 0 0; }
+
+    .profile-avatar img { max-width: 160px; max-height: 160px; }
+
+    /* Mobile adjustments */
+    @media (max-width: 768px) {
+        .profile-avatar { margin-bottom: 20px; }
+        .card-body .row { text-align: center; }
+        .card-body .col-md-8 { text-align: left; margin-top: 0; }
+        .list-group-item { font-size: 0.9rem; padding: 0.5rem 1rem; }
+    }
+</style>
+{% endblock %}

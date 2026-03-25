@@ -1,0 +1,22 @@
+{% extends "main.html" %}
+{% block title %}Request Prescription Refill{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            Request Prescription Refill
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="id_prescription" class="form-label">Select Prescription</label>
+                    {{ form.prescription }}
+                </div>
+                <button type="submit" class="btn btn-success">Submit Request</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
