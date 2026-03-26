@@ -1,5 +1,4 @@
-
-
+# patients/apps.py
 from django.apps import AppConfig
 
 class PatientsConfig(AppConfig):
@@ -7,11 +6,5 @@ class PatientsConfig(AppConfig):
     name = 'patients'
 
     def ready(self):
-        from django.contrib.auth.models import User
-
-        if not User.objects.filter(username='admin').exists():
-            User.objects.create_superuser(
-                username='admin',
-                email='admin@email.com',
-                password='admin123'
-            )
+        # Temporarily disable auto superuser creation
+        pass
