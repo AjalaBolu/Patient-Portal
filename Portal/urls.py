@@ -19,6 +19,7 @@ from django.contrib.auth import views as auth_views
 from django.shortcuts import render
 from django.conf.urls.static import static
 from django.conf import settings
+from django.contrib import admin
 
 def home_view(request):
     return render(request, 'home.html')
@@ -34,6 +35,7 @@ urlpatterns = [
     path('dashboard/', include('dashboard.urls')),
     path('communications/', include('communications.urls')),
     path('patient_portal/', include('patient_portal.urls', namespace='patient_portal')),
+    path('admin/', admin.site.urls),
 ] 
 
 
